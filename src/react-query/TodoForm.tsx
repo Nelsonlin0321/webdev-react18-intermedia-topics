@@ -29,6 +29,8 @@ const TodoForm = () => {
         savedTodo,
         ...(todos || []),
       ]);
+
+      if (ref.current) ref.current.value = "";
     },
   });
 
@@ -59,8 +61,9 @@ const TodoForm = () => {
             <Button
               type="submit"
               onClick={() => console.log(ref.current?.value)}
+              disabled={addTodo.isPending}
             >
-              Add
+              {addTodo.isPending ? "Add..." : "Add"}
             </Button>
           </Col>
         </Row>
