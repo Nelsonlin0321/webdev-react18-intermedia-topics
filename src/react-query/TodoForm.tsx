@@ -18,7 +18,7 @@ const TodoForm = () => {
         .post<Todo>("https://jsonplaceholder.typicode.com/todos", todo)
         .then((res) => res.data);
     },
-    onSuccess: (savedTodo, newTodo) => {
+    onSuccess: (savedTodo, _) => {
       // Approach 1: Invalidating the cache
       //   queryClient.invalidateQueries({
       //     queryKey: ["todos"],
