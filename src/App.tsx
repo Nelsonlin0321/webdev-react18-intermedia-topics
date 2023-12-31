@@ -1,11 +1,11 @@
 import "./App.css";
-import ToDoList from "./react-query/ToDoList";
+import TodoForm from "./react-query/TodoForm";
 
 function App() {
   return (
     <>
       <h1>Hello Word</h1>
-      <ToDoList />
+      <TodoForm />
     </>
   );
 }
