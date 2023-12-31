@@ -1,11 +1,11 @@
 import "./App.css";
-import PostList from "./components/PostList";
+import ToDoList from "./react-query/ToDoList";
 
 function App() {
   return (
     <>
       <h1>Hello Word</h1>
-      <PostList />
+      <ToDoList />
     </>
   );
 }

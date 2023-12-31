@@ -1,6 +1,6 @@
 import ListGroup from "react-bootstrap/ListGroup";
 import Form from "react-bootstrap/Form";
-import usePosts from "../hooks/usePosts";
+import usePosts from "./hooks/usePosts";
 import { useState } from "react";
 import { Button } from "react-bootstrap";
 import React from "react";
