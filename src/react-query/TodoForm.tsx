@@ -16,21 +16,35 @@ const TodoForm = () => {
   const addTodo = useMutation({
     mutationFn: (todo: Todo) => {
       return axios
-        .post<Todo>("https://jsonplaceholder.typicode.com/todos", todo)
+        .post<Todo>("https://jsonplaceholder.typicode.com/tosdos", todo)
         .then((res) => res.data);
     },
-    onSuccess: (savedTodo, _) => {
+    onMutate: (newTodo: Todo) => {
+      const previousTodos = queryClient.getQueryData<Todo[]>(["todos"]);
       // Approach 1: Invalidating the cache
       //   queryClient.invalidateQueries({
       //     queryKey: ["todos"],
       //   });
       // Approach 2: Updating the data in the cache
       queryClient.setQueriesData<Todo[]>({ queryKey: ["todos"] }, (todos) => [
-        savedTodo,
+        newTodo,
         ...(todos || []),
       ]);
 
+      return previousTodos;
+    },
+    onSuccess: (savedTodo, newTodo) => {
+      queryClient.setQueriesData<Todo[]>({ queryKey: ["todos"] }, (todos) =>
+        todos?.map((todo) => (todo == newTodo ? savedTodo : todo))
+      );
       if (ref.current) ref.current.value = "";
+    },
+    onError: (error, newTodo, previousTodos) => {
+      // context: Context is an object that we create to pass data in between our callbacks.
+      // Here, need a context object that includes the previous todo before we updated the cache.
+
+      if (!previousTodos) return;
+      queryClient.setQueriesData({ queryKey: ["todos"] }, previousTodos);
     },
   });
 
@@ -46,7 +60,7 @@ const TodoForm = () => {
           if (ref.current?.value) {
             addTodo.mutate({
               userId: 1,
-              id: 10,
+              id: 234234,
               title: ref.current.value,
               completed: false,
             });
@@ -58,11 +72,7 @@ const TodoForm = () => {
             <Form.Control type="text" ref={ref} />
           </Col>
           <Col>
-            <Button
-              type="submit"
-              onClick={() => console.log(ref.current?.value)}
-              disabled={addTodo.isPending}
-            >
+            <Button type="submit" disabled={addTodo.isPending}>
               {addTodo.isPending ? "Add..." : "Add"}
             </Button>
           </Col>
