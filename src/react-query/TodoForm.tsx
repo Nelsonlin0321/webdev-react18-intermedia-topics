@@ -5,6 +5,7 @@ import { Button, Form } from "react-bootstrap";
 import ListGroup from "react-bootstrap/ListGroup";
 import useTodos, { Todo } from "./hooks/useToDos";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Alert from "react-bootstrap/Alert";
 import axios from "axios";
 
 const TodoForm = () => {
@@ -35,6 +36,7 @@ const TodoForm = () => {
   if (error) return <p>{error.message}</p>;
   return (
     <>
+      {addTodo.error && <Alert variant="danger">{addTodo.error.message}</Alert>}
       <Form
         className="mb-3"
         onSubmit={(event) => {
