@@ -16,6 +16,7 @@ const PostList = () => {
     data: posts,
     isFetchingNextPage,
     fetchNextPage,
+    hasNextPage,
   } = usePosts({ userId, pageSize });
 
   if (isPending) return <p>Loading...</p>;
@@ -47,7 +48,7 @@ const PostList = () => {
           onClick={() => {
             fetchNextPage();
           }}
-          disabled={isFetchingNextPage}
+          disabled={isFetchingNextPage || !hasNextPage}
         >
           Load More
         </Button>
