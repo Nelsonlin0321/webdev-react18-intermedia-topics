@@ -4,18 +4,30 @@ import Col from "react-bootstrap/Col";
 import { Button, Form } from "react-bootstrap";
 import ListGroup from "react-bootstrap/ListGroup";
 import useTodos, { Todo } from "./hooks/useToDos";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 const TodoForm = () => {
+  const queryClient = useQueryClient();
   const ref = useRef<HTMLInputElement>(null);
   const { todos, error, isLoading } = useTodos();
 
-  const mutation = useMutation({
+  const addTodo = useMutation({
     mutationFn: (todo: Todo) => {
       return axios
-        .post("https://jsonplaceholder.typicode.com/todos", todo)
+        .post<Todo>("https://jsonplaceholder.typicode.com/todos", todo)
         .then((res) => res.data);
+    },
+    onSuccess: (savedTodo, newTodo) => {
+      // Approach 1: Invalidating the cache
+      //   queryClient.invalidateQueries({
+      //     queryKey: ["todos"],
+      //   });
+      // Approach 2: Updating the data in the cache
+      queryClient.setQueriesData<Todo[]>({ queryKey: ["todos"] }, (todos) => [
+        savedTodo,
+        ...(todos || []),
+      ]);
     },
   });
 
@@ -28,7 +40,7 @@ const TodoForm = () => {
         onSubmit={(event) => {
           event.preventDefault();
           if (ref.current?.value) {
-            mutation.mutate({
+            addTodo.mutate({
               userId: 1,
               id: 10,
               title: ref.current.value,
