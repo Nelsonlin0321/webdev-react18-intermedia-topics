@@ -8,22 +8,31 @@ type Post = {
   body: boolean;
 };
 
-const usePosts = () => {
+type PostQuery = {
+  userId: number | undefined;
+  pageSize: number;
+  page: number;
+};
+
+const usePosts = (query: PostQuery) => {
+  const params = {
+    _start: (query.page - 1) * query.pageSize,
+    _limit: query.pageSize,
+  };
+
   const fetchTodos = () =>
     axios
-      .get<Post[]>("https://jsonplaceholder.typicode.com/posts")
+      .get<Post[]>("https://jsonplaceholder.typicode.com/posts", {
+        params: query.userId ? { userId: query.userId, ...params } : params,
+      })
       .then((res) => res.data);
 
-  const {
-    data: posts,
-    error,
-    isLoading,
-  } = useQuery({
-    queryKey: ["posts"],
+  return useQuery({
+    queryKey: ["posts", query],
     queryFn: fetchTodos,
+    staleTime: 1 * 60 * 1000, //1 mins
+    placeholderData: (previousData) => previousData,
   });
-
-  return { posts, error, isLoading };
 };
 
 export default usePosts;
