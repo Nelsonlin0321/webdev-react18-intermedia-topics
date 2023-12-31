@@ -15,7 +15,7 @@ type PostQuery = {
 
 const usePosts = (query: PostQuery) => {
   return useInfiniteQuery<Post[]>({
-    queryKey: ["posts"],
+    queryKey: ["posts", query],
     queryFn: ({ pageParam }) => {
       const params = {
         _start: ((pageParam as number) - 1) * query.pageSize,

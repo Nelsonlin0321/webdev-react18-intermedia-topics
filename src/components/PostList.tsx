@@ -6,7 +6,7 @@ import { Button } from "react-bootstrap";
 import React from "react";
 
 const PostList = () => {
-  const pageSize = 10;
+  const pageSize = 3;
   const [userId, setUserId] = useState<number>();
 
   const {
@@ -50,7 +50,7 @@ const PostList = () => {
           }}
           disabled={isFetchingNextPage || !hasNextPage}
         >
-          Load More
+          {isFetchingNextPage ? "Loading..." : "Load More"}
         </Button>
       </div>
     </div>
