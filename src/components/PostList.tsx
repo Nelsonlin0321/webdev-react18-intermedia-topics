@@ -3,18 +3,20 @@ import Form from "react-bootstrap/Form";
 import usePosts from "../hooks/usePosts";
 import { useState } from "react";
 import { Button } from "react-bootstrap";
+import React from "react";
 
 const PostList = () => {
   const pageSize = 10;
   const [userId, setUserId] = useState<number>();
-  const [page, setPage] = useState<number>(1);
 
   const {
     isPending,
     isError,
     error,
     data: posts,
-  } = usePosts({ userId, pageSize, page });
+    isFetchingNextPage,
+    fetchNextPage,
+  } = usePosts({ userId, pageSize });
 
   if (isPending) return <p>Loading...</p>;
   if (isError) return <p>{error.message}</p>;
@@ -32,21 +34,22 @@ const PostList = () => {
         <option value="3">User 3</option>
       </Form.Select>
       <ListGroup>
-        {posts?.map((post) => (
-          <ListGroup.Item key={post.id}>{post.title}</ListGroup.Item>
+        {posts.pages.map((page, index) => (
+          <React.Fragment key={index}>
+            {page.map((post) => (
+              <ListGroup.Item key={post.id}>{post.title}</ListGroup.Item>
+            ))}
+          </React.Fragment>
         ))}
       </ListGroup>
       <div className="flex gap-2">
-        <Button disabled={page === 1} onClick={() => setPage(page - 1)}>
-          Previous
-        </Button>
         <Button
           onClick={() => {
-            setPage(page + 1);
+            fetchNextPage();
           }}
-          disabled={posts.length == 0}
+          disabled={isFetchingNextPage}
         >
-          Next
+          Load More
         </Button>
       </div>
     </div>
