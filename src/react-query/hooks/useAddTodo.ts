@@ -1,14 +1,11 @@
-import { Todo } from "./useTodos";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CACHE_KEY_TODOS } from "../constants";
-import APIClient from "../services/apiClient";
-
-const apiClient = new APIClient<Todo>("todos");
+import todoService, { Todo } from "../services/todoService";
 
 const useAddTodo = (onAdd: () => void) => {
   const queryClient = useQueryClient();
   const addTodo = useMutation({
-    mutationFn: apiClient.post,
+    mutationFn: todoService.post,
     onMutate: (newTodo: Todo) => {
       const previousTodos = queryClient.getQueryData<Todo[]>(CACHE_KEY_TODOS);
       // Approach 1: Invalidating the cache
