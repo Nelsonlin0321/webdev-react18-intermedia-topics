@@ -39,9 +39,7 @@ const TodoForm = () => {
             <Form.Control type="text" ref={ref} />
           </Col>
           <Col>
-            <Button type="submit" disabled={addTodo.isPending}>
-              {addTodo.isPending ? "Add..." : "Add"}
-            </Button>
+            <Button type="submit">Add</Button>
           </Col>
         </Row>
       </Form>

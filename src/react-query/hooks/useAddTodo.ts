@@ -1,16 +1,14 @@
-import axios from "axios";
 import { Todo } from "./useTodos";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CACHE_KEY_TODOS } from "../constants";
+import APIClient from "../services/apiClient";
+
+const apiClient = new APIClient<Todo>("todos");
 
 const useAddTodo = (onAdd: () => void) => {
   const queryClient = useQueryClient();
   const addTodo = useMutation({
-    mutationFn: (todo: Todo) => {
-      return axios
-        .post<Todo>("https://jsonplaceholder.typicode.com/todos", todo)
-        .then((res) => res.data);
-    },
+    mutationFn: apiClient.post,
     onMutate: (newTodo: Todo) => {
       const previousTodos = queryClient.getQueryData<Todo[]>(CACHE_KEY_TODOS);
       // Approach 1: Invalidating the cache
